@@ -13,7 +13,6 @@ import org.jboss.weld.junit5.WeldInitiator;
 import org.jboss.weld.junit5.WeldSetup;
 import org.junit.jupiter.api.Test;
 import org.sterl.dependency.analyze.activity.AnalyseManager;
-import org.sterl.dependency.component.activity.ComponentManager;
 import org.sterl.dependency.component.model.Component;
 
 @EnableWeld

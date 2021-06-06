@@ -18,20 +18,15 @@ public class MethodCallAnalyser implements AnalyserPlugin {
     public void analyze(Node node, JavaClass javaClass) {
         MethodCallExpr d = (MethodCallExpr)node;
         try {
-            if (node.toString().equals("dependsOnCounter.addOne()")) {
-                d.resolve();
-            }
-            ResolvedMethodDeclaration resolve = d.resolve();
-            String name = resolve.getPackageName() + "." + resolve.getClassName();
-            JavaClass calls = am.getJavaClass(name);
-            // exclude calls to ourself ...
-            if (calls != null && calls != javaClass) {
-                javaClass.uses(calls);
-            }
+            final ResolvedMethodDeclaration resolve = d.resolve();
+            final String name = resolve.getPackageName() + "." + resolve.getClassName();
+            javaClass.uses(am.getJavaClass(name));
         } catch(Exception e) {
-            // TODO logging?
+            System.err.println("WARN: " + e.getMessage());
+            // TODO
+            // throw new RuntimeException(e);
         } catch (NoClassDefFoundError e) {
-            System.out.println(node);
+            System.out.println("WARN: " + e.getMessage() + " - " + node);
         }
     }
     

@@ -6,8 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -19,8 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.sterl.dependency.analyze.activity.AnalyseManager;
 import org.sterl.dependency.analyze.model.JavaClass;
 import org.sterl.dependency.component.activity.ComponentManager;
-import org.sterl.dependency.graph.DotClassOutputManager;
-import org.sterl.dependency.graph.DotComponentOutputManager;
 
 @EnableWeld
 public class DotClassOutputManagerTest {

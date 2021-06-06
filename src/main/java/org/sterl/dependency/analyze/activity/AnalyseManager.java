@@ -35,14 +35,17 @@ public class AnalyseManager {
     private void analyseChilds(JavaClass jc, List<Node> childNodes) {
         if (childNodes != null && !childNodes.isEmpty()) {
             for (Node n : childNodes) {
-                analyser.stream().filter(a -> a.accepts(n)).forEach(a -> a.analyze(n, jc));
+                analyser.stream().filter(a -> a.accepts(n)).forEach(
+                        a -> a.analyze(n, jc));
                 analyseChilds(jc, n.getChildNodes());
             }
         }
     }
 
     public JavaClass getJavaClass(String nameAsString) {
-        return classRepository.getClassByName(nameAsString);
+        final JavaClass result = classRepository.getClassByName(nameAsString);
+        if (result == null) System.err.println("WARN: " + nameAsString + " not found!");
+        return result;
     }
     
     public JavaClass getJavaClass(Class<?> clazz) {

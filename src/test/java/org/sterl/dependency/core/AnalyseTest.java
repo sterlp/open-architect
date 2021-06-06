@@ -41,4 +41,12 @@ public class AnalyseTest {
         JavaClass classByName = repository.getClassByName(FooManager.class.getName());
         assertEquals("BarActivity", classByName.getUses().iterator().next().getSimpleName());
     }
+    
+    @Test
+    void Test() throws Exception {
+        analyseManager.addClasses("src/test/java/org/sterl/testproject/persons");
+        
+        final JavaClass pc = analyseManager.getJavaClass("org.sterl.testproject.persons.api.PersonConverter");
+        assertNotNull(pc);
+    }
 }

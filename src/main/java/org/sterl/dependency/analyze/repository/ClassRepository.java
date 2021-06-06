@@ -18,6 +18,7 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParseStart;
+import com.github.javaparser.Provider;
 import com.github.javaparser.Providers;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.symbolsolver.JavaSymbolSolver;
@@ -31,7 +32,8 @@ public class ClassRepository {
 
     public ClassRepository() {
         final CombinedTypeSolver combinedTypeSolver = new CombinedTypeSolver();
-        combinedTypeSolver.add(new RepositoryTypeResolver(this));
+        RepositoryTypeResolver typeSolver = new RepositoryTypeResolver(this);
+        combinedTypeSolver.add(typeSolver);
         // Configure JavaParser to use type resolution
         final JavaSymbolSolver symbolSolver = new JavaSymbolSolver(combinedTypeSolver);
         javaParser = new JavaParser();
@@ -45,29 +47,35 @@ public class ClassRepository {
      * @throws IOException
      */
     public int addClasses(String directory) throws IOException {
-        List<Path> files = Files.walk(Paths.get(directory))
+        final List<Path> files = Files.walk(Paths.get(directory))
                 .filter((i) -> i.getFileName().toString().endsWith(".java"))
                 .collect(Collectors.toList());
         
         for (Path path : files) {
-            final ParseResult<CompilationUnit> result = javaParser.parse(ParseStart.COMPILATION_UNIT, Providers.provider(path));
-            if (result.isSuccessful()) {
-                final CompilationUnit cu = result.getResult().get().setStorage(path);
-                final JavaClass c = new JavaClass(cu);
-                classes.put(c.getName(), c);
-            } else {
-                // TODO maybe we should define a smarter way here, basically don't stop on the first error.
-                throw new ParseProblemException(result.getProblems());
-            }
+            final JavaClass c = parseFile(javaParser, path);
+            classes.put(c.getName(), c);
         }
         return files.size();
     }
-    
+
     public JavaClass getClassByName(String name) {
         return classes.get(name);
     }
     
     public Collection<JavaClass> getAllClasses() {
         return classes.values();
+    }
+    
+    public static JavaClass parseFile(JavaParser javaParser, Path path) throws IOException {
+        try (Provider p = Providers.provider(path)) {
+            final ParseResult<CompilationUnit> result = javaParser.parse(ParseStart.COMPILATION_UNIT, p);
+            if (result.isSuccessful()) {
+                final CompilationUnit cu = result.getResult().get().setStorage(path);
+                return new JavaClass(cu);
+            } else {
+                // TODO maybe we should define a smarter way here, basically don't stop on the first error.
+                throw new ParseProblemException(result.getProblems());
+            }
+        }
     }
 }

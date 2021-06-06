@@ -7,23 +7,24 @@ import org.sterl.dependency.analyze.activity.AnalyseManager;
 import org.sterl.dependency.analyze.activity.AnalyserPlugin;
 import org.sterl.dependency.analyze.model.JavaClass;
 
-import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 
 @ApplicationScoped
-public class ImportAnalyser implements AnalyserPlugin {
+public class ObjectCreationAnalyser implements AnalyserPlugin {
     @Inject AnalyseManager am;
 
     public void analyze(Node node, JavaClass javaClass) {
-        final ImportDeclaration id = (ImportDeclaration)node;
+        final ObjectCreationExpr d = (ObjectCreationExpr)node;
 
-        if (!id.getNameAsString().equals(javaClass.getName())) {
-            JavaClass c = am.getJavaClass(id.getNameAsString());
-            javaClass.uses(c);
+        JavaClass objCreated = am.getJavaClass(d.getTypeAsString());
+        if (objCreated == null) {
+            objCreated = am.getJavaClass(javaClass.resolveType(d.getTypeAsString()));
         }
+        javaClass.uses(objCreated);
     }
 
     public boolean accepts(Node node) {
-        return node instanceof ImportDeclaration;
+        return node instanceof ObjectCreationExpr;
     }
 }

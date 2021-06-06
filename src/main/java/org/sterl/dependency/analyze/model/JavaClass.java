@@ -5,9 +5,9 @@ import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import org.jboss.weld.exceptions.IllegalArgumentException;
-
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.ImportDeclaration;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.TypeDeclaration;
 
 import lombok.Data;
@@ -43,9 +43,29 @@ public class JavaClass {
     }
     
     public void uses(JavaClass javaClass) {
-        if (javaClass == this) {
-            throw new IllegalArgumentException("Self reference makes no sense ...");
+        if (javaClass == null || javaClass == this) {
+            // ignored!
+        } else {
+            uses.add(javaClass);
         }
-        uses.add(javaClass);
+    }
+    
+    public NodeList<ImportDeclaration> getImports() {
+        return cu.getImports();
+    }
+
+    /**
+     * Resolves the given Class in scope of this class.
+     * @return the full name
+     */
+    public String resolveType(String clazz) {
+        final Optional<ImportDeclaration> f = cu.getImports().stream().filter(i -> i.getNameAsString().endsWith(clazz))
+            .findFirst();
+        
+        if (f.isPresent()) {
+            return f.get().getNameAsString();
+        } else {
+            return this.classPackage + "." + clazz;
+        }
     }
 }
