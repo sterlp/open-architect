@@ -43,7 +43,7 @@ public class ComponentManager {
     }
     
     private void callculateDependsOn(Component component) {
-        Set<String> analyzed = new HashSet<>();
+        final Set<String> analyzed = new HashSet<>();
         
         // for all classes in the component itself
         component.getContains().forEach(jc -> {
@@ -72,15 +72,13 @@ public class ComponentManager {
             
             String qualifiedName;
             if (componentBase.equals(classPackage)) {
-            	qualifiedName = componentBase;
+                qualifiedName = componentBase;
             } else {
-            	qualifiedName = componentBase + "." + componentName;
+                qualifiedName = componentBase + "." + componentName;
             }
             
-            Component component = components.computeIfAbsent(qualifiedName, key -> {
-                Component r = new Component();
-                r.setName(componentName);
-                r.setQualifiedName(qualifiedName);
+            final Component component = components.computeIfAbsent(qualifiedName, key -> {
+                Component r = new Component(componentName, qualifiedName);
                 return r;
             });
             classToComponent.put(javaClass.getName(), qualifiedName);

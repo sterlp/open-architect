@@ -45,11 +45,13 @@ public class ComponentManagerTest {
         analyseManager.addClasses("./src/test/java/org/sterl");
         compManager.reBuildComponent(Arrays.asList("org.sterl.testproject"));
         
-        Component adresses = compManager.getComponents().get("org.sterl.testproject.adresses");
+        System.out.println(compManager.getComponents().keySet());
+        
+        Component adresses = compManager.getComponents().get("org.sterl.testproject.addresses");
         assertEquals(0, adresses.getDependsOn().size());
         
         Component persons = compManager.getComponents().get("org.sterl.testproject.persons");
         assertEquals(1, persons.getDependsOn().size());
-        assertEquals("org.sterl.testproject.adresses", persons.getDependsOn().values().iterator().next().getComponent().getQualifiedName());
+        assertEquals("org.sterl.testproject.addresses", persons.getDependsOn().values().iterator().next().getComponent().getQualifiedName());
     }
 }

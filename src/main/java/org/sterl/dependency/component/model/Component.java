@@ -11,8 +11,8 @@ import lombok.Data;
 
 @Data
 public class Component {
-    private String name;
-    private String qualifiedName;
+    private final String name;
+    private final String qualifiedName;
 
     private Set<JavaClass> contains = new LinkedHashSet<>();
     private Map<String, DependsOnCounter> dependsOn = new LinkedHashMap<>();
@@ -24,12 +24,16 @@ public class Component {
     }
 
     /**
-     * Counter and addeder method if we depend here on a given component
+     * Counter and adder method if we depend here on a given component
      * @param dependantComponent the {@link Component} used by this {@link Component}
      */
     public Component dependsOn(final Component dependantComponent) {
         DependsOnCounter dependsOnCounter = dependsOn.computeIfAbsent(dependantComponent.getQualifiedName(), k -> new DependsOnCounter(dependantComponent));
         dependsOnCounter.addOne();
         return this;
+    }
+
+    public int sumTotalDependsOn() {
+        return dependsOn.values().stream().mapToInt(DependsOnCounter::getCount).sum();
     }
 }
