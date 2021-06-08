@@ -46,23 +46,30 @@ public class DotClassOutputManagerTest {
         compManager.reBuildComponent(Arrays.asList("org.sterl.dependecy", "org.sterl.testproject"));
         
         String result = outputComp.printDependency(compManager.getComponents().values());
+        System.out.println("{");
+        System.out.println("    'root': `");
         System.out.println(result);
+        System.out.println("`,");
         
-        toDotSvg(result, "test.project");
+        // toDotSvg(result, "test.project");
         
         compManager.getComponents().entrySet().forEach(e -> {
             final Set<JavaClass> componentClasses = e.getValue().getContains();
-            String graphViz = output.printDependency(componentClasses, c -> {
+            final String graphViz = output.printDependency(componentClasses, c -> {
                 Color color = Color.GREEN;
                 if (!c.getClassPackage().contains(e.getValue().getQualifiedName())) color = Color.BLUE;
                 return color;
             });
-            System.out.println(graphViz);
+            System.out.println(    "'" + e.getKey() + "': `");
+            System.out.println(    graphViz);
+            System.out.println("    `,");
+            
+            /*
             try {
                 toDotSvg(graphViz, e.getKey());
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
-            }
+            }*/
         });
     }
     

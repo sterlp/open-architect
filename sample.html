@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<body>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://unpkg.com/@hpcc-js/wasm@0.3.11/dist/index.min.js"></script>
+<script src="https://unpkg.com/d3-graphviz@3.0.5/build/d3-graphviz.js"></script>
+<div id="graph" style="text-align: center; width: 100%;"></div>
+<script>
+
+var data = {
+    'root': `
+digraph {
+    "org.sterl.testproject.simple" [label=<
+ <table><tr><td><b>simple</b></td></tr><tr><td>classes 3</td></tr></table> 
+> 
+shape=component fontcolor=white fillcolor="#343a40" style=filled]
+    "org.sterl.testproject.addresses" [label=<
+ <table><tr><td><b>addresses</b></td></tr><tr><td>classes 3</td></tr></table> 
+> 
+shape=component fontcolor=white fillcolor="#343a40" style=filled]
+    "org.sterl.testproject.persons" [label=<
+ <table><tr><td><b>persons</b></td></tr><tr><td>classes 7</td></tr></table> 
+> 
+shape=component fontcolor=white fillcolor="#343a40" style=filled]
+    "org.sterl.testproject.persons" -> "org.sterl.testproject.addresses" [label="2"]
+
+}
+
+`,
+'org.sterl.testproject.simple': `
+digraph {
+    "org.sterl.testproject.simple.FooManager" [label="FooManager" shape=box fontcolor=white fillcolor="#28a745" style=filled]
+    "org.sterl.testproject.simple.FooManager" -> "org.sterl.testproject.simple.BarActivity"
+
+    "org.sterl.testproject.simple.SimpleEntityBE" [label="SimpleEntityBE" shape=box fontcolor=white fillcolor="#28a745" style=filled]
+    "org.sterl.testproject.simple.BarActivity" [label="BarActivity" shape=box fontcolor=white fillcolor="#28a745" style=filled]
+    "org.sterl.testproject.simple.BarActivity" -> "org.sterl.testproject.simple.SimpleEntityBE"
+
+    "org.sterl.testproject.simple.SimpleEntityBE" [label="SimpleEntityBE" shape=box fontcolor=white fillcolor="#28a745" style=filled]
+    "org.sterl.testproject.simple.BarActivity" [label="BarActivity" shape=box fontcolor=white fillcolor="#28a745" style=filled]
+}
+
+    `,
+'org.sterl.testproject.addresses': `
+digraph {
+    "org.sterl.testproject.addresses.activity.AddressManager" [label="AddressManager" shape=box fontcolor=white fillcolor="#28a745" style=filled]
+    "org.sterl.testproject.addresses.activity.AddressManager" -> "org.sterl.testproject.addresses.dao.AddressDao"
+    "org.sterl.testproject.addresses.activity.AddressManager" -> "org.sterl.testproject.addresses.model.AddressBE"
+
+    "org.sterl.testproject.addresses.dao.AddressDao" [label="AddressDao" shape=box fontcolor=white fillcolor="#28a745" style=filled]
+    "org.sterl.testproject.addresses.dao.AddressDao" -> "org.sterl.testproject.addresses.model.AddressBE"
+
+    "org.sterl.testproject.addresses.model.AddressBE" [label="AddressBE" shape=box fontcolor=white fillcolor="#28a745" style=filled]
+    "org.sterl.testproject.addresses.dao.AddressDao" [label="AddressDao" shape=box fontcolor=white fillcolor="#28a745" style=filled]
+    "org.sterl.testproject.addresses.model.AddressBE" [label="AddressBE" shape=box fontcolor=white fillcolor="#28a745" style=filled]
+}
+
+    `,
+'org.sterl.testproject.persons': `
+digraph {
+    "org.sterl.testproject.persons.activity.PersonManager" [label="PersonManager" shape=box fontcolor=white fillcolor="#28a745" style=filled]
+    "org.sterl.testproject.persons.activity.PersonManager" -> "org.sterl.testproject.addresses.activity.AddressManager"
+    "org.sterl.testproject.persons.activity.PersonManager" -> "org.sterl.testproject.persons.dao.PersonDao"
+    "org.sterl.testproject.persons.activity.PersonManager" -> "org.sterl.testproject.persons.model.PersonBE"
+
+    "org.sterl.testproject.persons.dao.PersonDao" [label="PersonDao" shape=box fontcolor=white fillcolor="#28a745" style=filled]
+    "org.sterl.testproject.persons.dao.PersonDao" -> "org.sterl.testproject.persons.model.PersonBE"
+
+    "org.sterl.testproject.persons.model.PersonBE" [label="PersonBE" shape=box fontcolor=white fillcolor="#28a745" style=filled]
+    "org.sterl.testproject.persons.model.PersonBE" -> "org.sterl.testproject.addresses.model.AddressBE"
+
+    "org.sterl.testproject.persons.api.PersonBF" [label="PersonBF" shape=box fontcolor=white fillcolor="#28a745" style=filled]
+    "org.sterl.testproject.persons.api.PersonBF" -> "org.sterl.testproject.persons.activity.PersonManager"
+    "org.sterl.testproject.persons.api.PersonBF" -> "org.sterl.testproject.persons.model.PersonBE"
+
+    "org.sterl.testproject.persons.api.PersonConverter" [label="PersonConverter" shape=box fontcolor=white fillcolor="#28a745" style=filled]
+    "org.sterl.testproject.persons.api.PersonConverter" -> "org.sterl.testproject.addresses.model.AddressBE"
+    "org.sterl.testproject.persons.api.PersonConverter" -> "org.sterl.testproject.persons.model.PersonBE"
+    "org.sterl.testproject.persons.api.PersonConverter" -> "org.sterl.testproject.persons.api.Person"
+    "org.sterl.testproject.persons.api.PersonConverter" -> "org.sterl.testproject.persons.api.Adress"
+
+    "org.sterl.testproject.persons.api.Person" [label="Person" shape=box fontcolor=white fillcolor="#28a745" style=filled]
+    "org.sterl.testproject.persons.api.Adress" [label="Adress" shape=box fontcolor=white fillcolor="#28a745" style=filled]
+    "org.sterl.testproject.addresses.activity.AddressManager" [label="AddressManager" shape=box fontcolor=white fillcolor="#007bff" style=filled]
+    "org.sterl.testproject.persons.api.Person" [label="Person" shape=box fontcolor=white fillcolor="#28a745" style=filled]
+    "org.sterl.testproject.persons.model.PersonBE" [label="PersonBE" shape=box fontcolor=white fillcolor="#28a745" style=filled]
+    "org.sterl.testproject.persons.activity.PersonManager" [label="PersonManager" shape=box fontcolor=white fillcolor="#28a745" style=filled]
+    "org.sterl.testproject.persons.api.Adress" [label="Adress" shape=box fontcolor=white fillcolor="#28a745" style=filled]
+    "org.sterl.testproject.persons.dao.PersonDao" [label="PersonDao" shape=box fontcolor=white fillcolor="#28a745" style=filled]
+    "org.sterl.testproject.addresses.model.AddressBE" [label="AddressBE" shape=box fontcolor=white fillcolor="#007bff" style=filled]
+}
+
+    `
+	};
+
+var transition = d3.transition().duration(1000)
+	.on("end", function () {
+		nodes = d3.selectAll('.node,.edge');
+		nodes.on("click", function(e) {
+				if (data[e.key]) {
+					graphviz.renderDot(data[e.key]);
+				}
+				console.info(e);
+				console.info(e.key);
+			}
+		);
+		console.info(nodes);
+	});
+var graphviz = d3.select("#graph").graphviz()
+	.transition(transition)
+    .renderDot(data.root);
+
+
+</script>
+</body>
