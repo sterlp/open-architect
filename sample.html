@@ -1,10 +1,26 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 <body>
-<script src="https://d3js.org/d3.v5.min.js"></script>
-<script src="https://unpkg.com/@hpcc-js/wasm@0.3.11/dist/index.min.js"></script>
-<script src="https://unpkg.com/d3-graphviz@3.0.5/build/d3-graphviz.js"></script>
-<div id="graph" style="text-align: center; width: 100%;"></div>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://unpkg.com/@hpcc-js/wasm@0.3.11/dist/index.min.js"></script>
+    <script src="https://unpkg.com/d3-graphviz@3.0.5/build/d3-graphviz.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand">TITLE</a>
+            <div class="d-flex">
+                <button id="root" class="btn btn-outline-primary me-2">Root</button>
+                <button id="back" class="btn btn-outline-secondary">Back ></button>
+            </div>
+        </div>
+    </nav>
+    <div style="width: 100%;">
+        <div id="graph" style="text-align: center; width: 100%;"></div>
+    </div>
 <script>
 
 var data = {
@@ -93,23 +109,47 @@ digraph {
     `
 	};
 
-var transition = d3.transition().duration(1000)
-	.on("end", function () {
-		nodes = d3.selectAll('.node,.edge');
-		nodes.on("click", function(e) {
-				if (data[e.key]) {
-					graphviz.renderDot(data[e.key]);
-				}
-				console.info(e);
-				console.info(e.key);
-			}
-		);
-		console.info(nodes);
-	});
-var graphviz = d3.select("#graph").graphviz()
-	.transition(transition)
-    .renderDot(data.root);
+    var current;
+    var graphHistory = [];
 
+    var graphviz = d3.select("#graph")
+                     .graphviz()
+                     .transition(function() {
+                          return d3.transition()
+                            .ease(d3.easeLinear)
+                            .duration(500);
+                     });
 
+    function startApp () {
+        var nodes = d3.selectAll('.node');
+        nodes.on("click", function(e) {
+                var d = data[e.key];
+                console.info('click', e.key, !!d);
+                if (d) {
+                    show(d);
+                }
+            }
+        );
+        console.info('started');
+    };
+    
+    function show(value) {
+        if (current) graphHistory.push(current);
+        graphviz.renderDot(value, startApp);
+        current = value;
+    }
+
+    d3.select("#root").on("click", function() {
+        graphHistory.length = 0;
+        current = null;
+        show(data.root);
+    });
+    d3.select("#back").on("click", function() {
+        var data = graphHistory.pop();
+        console.info("pop", !!data);
+        if (data) show(data);
+    });
+    show(data.root);
 </script>
 </body>
+</html>
