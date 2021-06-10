@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.Set;
 
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
 
 import org.jboss.weld.junit5.EnableWeld;
 import org.jboss.weld.junit5.WeldInitiator;
@@ -41,15 +43,15 @@ public class DotClassOutputManagerTest {
 
     @Test
     public void testDotComponentOutputManager() throws Exception {
-        
+        final JsonObjectBuilder obj = Json.createObjectBuilder();
+
         analyseManager.addClasses("./src/test/java/org/sterl");
         compManager.reBuildComponent(Arrays.asList("org.sterl.dependecy", "org.sterl.testproject"));
         
-        String result = outputComp.printDependency(compManager.getComponents().values());
-        System.out.println("{");
-        System.out.println("    'root': `");
-        System.out.println(result);
-        System.out.println("`,");
+        final String result = outputComp.printDependency(compManager.getComponents().values());
+        
+        System.err.println(result);
+        obj.add("root", result);
         
         // toDotSvg(result, "test.project");
         
@@ -60,9 +62,9 @@ public class DotClassOutputManagerTest {
                 if (!c.getClassPackage().contains(e.getValue().getQualifiedName())) color = Color.BLUE;
                 return color;
             });
-            System.out.println(    "'" + e.getKey() + "': `");
-            System.out.println(    graphViz);
-            System.out.println("    `,");
+
+            System.err.println(graphViz);
+            obj.add(e.getKey(), graphViz);
             
             /*
             try {
@@ -71,6 +73,8 @@ public class DotClassOutputManagerTest {
                 throw new RuntimeException(ex);
             }*/
         });
+        
+        System.err.println(obj.build());
     }
     
     private void toDotSvg(String printDependency, String fileName) throws IOException, InterruptedException {
