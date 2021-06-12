@@ -1,13 +1,14 @@
-package org.sterl.dependency.graph;
+package org.sterl.dependency.graph.activity;
 
 import java.util.Collection;
 
 import javax.enterprise.context.ApplicationScoped;
 
 import org.sterl.dependency.component.model.Component;
+import org.sterl.dependency.graph.model.Color;
 
 @ApplicationScoped
-public class DotComponentOutputManager implements CommonStrings {
+public class DotComponentOutputManager implements DotOutputGenerator {
 
     public String printDependency(Collection<Component> components) {
         StringBuilder result = new StringBuilder();
@@ -19,7 +20,7 @@ public class DotComponentOutputManager implements CommonStrings {
                   .append(name)
                       .append(" [label=<\n ").append("<table><tr><td><b>" + c.getName() + "</b></td></tr><tr><td>classes " + c.getContains().size()  + "</td></tr></table>")
                       .append(" \n> \n")
-                  .append("shape=component fontcolor=white fillcolor=\"" + Color.DARK.rgb + "\" style=filled")
+                  .append("shape=component fontcolor=white fillcolor=\"" + Color.DARK.get() + "\" style=filled")
                   .append("]").append(NEW_LINE);
             if (!c.getDependsOn().isEmpty()) {
                 c.getDependsOn().values().stream().forEach(used -> {

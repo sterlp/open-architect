@@ -19,6 +19,9 @@ import org.junit.jupiter.api.Test;
 import org.sterl.dependency.analyze.activity.AnalyseManager;
 import org.sterl.dependency.analyze.model.JavaClass;
 import org.sterl.dependency.component.activity.ComponentManager;
+import org.sterl.dependency.graph.activity.DotClassOutputManager;
+import org.sterl.dependency.graph.activity.DotComponentOutputManager;
+import org.sterl.dependency.graph.model.Color;
 
 @EnableWeld
 public class DotClassOutputManagerTest {
@@ -38,7 +41,6 @@ public class DotClassOutputManagerTest {
         String printDependency = output.printDependency(analyseManager.getAll());
         System.out.println(printDependency);
         
-        toDotSvg(printDependency, "out");
     }
 
     @Test

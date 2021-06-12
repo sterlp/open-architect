@@ -13,7 +13,7 @@ import org.jboss.weld.junit5.WeldSetup;
 import org.junit.jupiter.api.Test;
 import org.sterl.dependency.analyze.activity.AnalyseManager;
 import org.sterl.dependency.analyze.model.JavaClass;
-import org.sterl.dependency.graph.DotClassOutputManager;
+import org.sterl.dependency.graph.activity.DotClassOutputManager;
 
 @EnableWeld
 public class ImportAnalyserTest {

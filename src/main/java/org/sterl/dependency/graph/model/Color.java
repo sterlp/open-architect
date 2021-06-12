@@ -1,4 +1,4 @@
-package org.sterl.dependency.graph;
+package org.sterl.dependency.graph.model;
 
 import lombok.AllArgsConstructor;
 
@@ -8,5 +8,9 @@ public enum Color {
     GREEN("#28a745"),
     DARK("#343a40")
     ;
-    final String rgb;
+    private final String rgb;
+    
+    public String get() {
+        return rgb;
+    }
 }

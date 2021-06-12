@@ -21,20 +21,12 @@ class ComponentManagerUtil {
     }
     
     static String determineBestQualified(List<String> bases) {
-        String base = null;
-        if (!bases.isEmpty()) {
-            base = bases.get(0);
-            if (bases.size() > 1) {
-                int dotCount = StringUtils.countMatches(base, ".");
-                for (int i = 1; i < bases.size(); i++) {
-                    int newCount = StringUtils.countMatches(bases.get(i), ".");
-                    if (newCount > dotCount) {
-                        dotCount = newCount;
-                        base = bases.get(i);
-                    }
-                }
-            }
+        if (bases.isEmpty()) return null;
+        else if (bases.size() == 1) return bases.get(0);
+        else {
+            // up sort, longest path first
+            bases.sort((s1, s2) -> s2.length() - s1.length());
+            return bases.get(0);
         }
-        return base;
     }
 }

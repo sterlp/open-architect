@@ -36,4 +36,8 @@ public class Component {
     public int sumTotalDependsOn() {
         return dependsOn.values().stream().mapToInt(DependsOnCounter::getCount).sum();
     }
+
+    public void addContains(JavaClass javaClass) {
+        this.contains.add(javaClass);
+    }
 }

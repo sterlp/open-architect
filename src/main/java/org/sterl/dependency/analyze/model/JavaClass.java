@@ -5,6 +5,8 @@ import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import org.sterl.dependency.component.model.Component;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.NodeList;
@@ -20,16 +22,19 @@ public class JavaClass {
     final String name;
     final String simpleName;
     final String classPackage;
+    Component assignedTo;
 
     final CompilationUnit cu; 
     /** Optional type if it is real type */
     final TypeDeclaration<?> type;
     
     private final Set<JavaClass> uses = new LinkedHashSet<>();
+    private final Set<JavaClass> usedBy = new LinkedHashSet<>();
     
     public enum ClassType {
         CLASS,
-        INTERFACE
+        INTERFACE,
+        ANNOTATION
     }
     
     public JavaClass (CompilationUnit compilationUnit) throws IOException {
@@ -43,13 +48,23 @@ public class JavaClass {
     }
     
     public void uses(JavaClass javaClass) {
-        if (javaClass == null || javaClass == this) {
+        if (javaClass == null || this.equals(javaClass) || uses.contains(javaClass)) {
             // ignored!
         } else {
             uses.add(javaClass);
+            javaClass.usedBy(this);
         }
     }
-    
+
+    private void usedBy(JavaClass javaClass) {
+        if (javaClass == null || this.equals(javaClass) || usedBy.contains(javaClass)) {
+            // nope
+        } else {
+            this.usedBy.add(javaClass);
+            javaClass.uses(this);
+        }
+    }
+
     public NodeList<ImportDeclaration> getImports() {
         return cu.getImports();
     }

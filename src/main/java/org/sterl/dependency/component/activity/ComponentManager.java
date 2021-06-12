@@ -63,7 +63,9 @@ public class ComponentManager {
     
     private void asignToComponents(JavaClass javaClass) {
         final String classPackage = javaClass.getClassPackage();
-        List<String> bases = componentBases.stream().filter(cb -> classPackage.contains(cb)).collect(Collectors.toList());
+        List<String> bases = componentBases.stream()
+                .filter(cb -> classPackage.contains(cb))
+                .collect(Collectors.toList());
         
         String componentBase = ComponentManagerUtil.determineBestQualified(bases);
         // if we don't find a base we have an "orphan" class which we ignore here ...
@@ -76,13 +78,14 @@ public class ComponentManager {
             } else {
                 qualifiedName = componentBase + "." + componentName;
             }
-            
+
             final Component component = components.computeIfAbsent(qualifiedName, key -> {
                 Component r = new Component(componentName, qualifiedName);
                 return r;
             });
             classToComponent.put(javaClass.getName(), qualifiedName);
-            component.getContains().add(javaClass);
+            component.addContains(javaClass);
+            javaClass.setAssignedTo(component);
         }
     }
 
