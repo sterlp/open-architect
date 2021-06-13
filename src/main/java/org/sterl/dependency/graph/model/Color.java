@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum Color {
-    BLUE("#007bff"),
-    GREEN("#28a745"),
-    DARK("#343a40")
+    BLUE("#0d6efd"),
+    GREEN("#198754"),
+    DARK("#6c757d")
     ;
     private final String rgb;
     

@@ -18,3 +18,9 @@
 ## Package persons
 
 <img src="persons.png">
+
+# Links
+
+- http://viz-js.com/
+- https://github.com/magjac/d3-graphviz
+- https://graphviz.org/
