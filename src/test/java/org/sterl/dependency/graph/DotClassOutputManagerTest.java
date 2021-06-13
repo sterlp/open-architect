@@ -42,6 +42,7 @@ public class DotClassOutputManagerTest {
         System.out.println(printDependency);
         
     }
+    
 
     @Test
     public void testDotComponentOutputManager() throws Exception {

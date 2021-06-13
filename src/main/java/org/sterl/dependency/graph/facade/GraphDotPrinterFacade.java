@@ -2,6 +2,7 @@ package org.sterl.dependency.graph.facade;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -38,7 +39,15 @@ public class GraphDotPrinterFacade {
         
         compManager.getComponents().entrySet().forEach(e -> {
             final Set<JavaClass> componentClasses = e.getValue().getContains();
-            final String graphViz = output.printDependency(componentClasses, c -> {
+            final Set<JavaClass> toPrint = new HashSet<>();
+
+            componentClasses.forEach(jc -> {
+                toPrint.add(jc);
+                toPrint.addAll(jc.getUses());
+            });
+
+            
+            final String graphViz = output.printDependency(toPrint, c -> {
                 Color color = Color.GREEN;
                 if (!c.getClassPackage().contains(e.getValue().getQualifiedName())) color = Color.BLUE;
                 return color;
@@ -46,6 +55,21 @@ public class GraphDotPrinterFacade {
 
             obj.add(e.getKey(), graphViz);
         });
+        
+        for(final JavaClass jc : analyseManager.getAll()) {
+            final Set<JavaClass> toPrint = new HashSet<>();
+            toPrint.add(jc);
+            toPrint.addAll(jc.getUses());
+            toPrint.addAll(jc.getUsedBy());
+            
+            final String graphViz = output.printDependency(toPrint, c -> {
+                Color color = Color.BLUE;
+                if (c.getAssignedTo() == jc.getAssignedTo()) color = Color.GREEN;
+                return color;
+            });
+
+            obj.add(jc.getName(), graphViz);
+        }
         
         return obj.build();
     }

@@ -6,9 +6,10 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.sterl.dependency.component.model.Component;
 import org.sterl.dependency.graph.model.Color;
+import org.sterl.dependency.graph.model.DotConstants;
 
 @ApplicationScoped
-public class DotComponentOutputManager implements DotOutputGenerator {
+public class DotComponentOutputManager implements DotConstants {
 
     public String printDependency(Collection<Component> components) {
         StringBuilder result = new StringBuilder();
