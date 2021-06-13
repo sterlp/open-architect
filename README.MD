@@ -14,4 +14,4 @@
 
 ## Package persons
 
-<img src=persons.png">
+<img src="persons.png">
