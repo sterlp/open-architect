@@ -1,7 +1,4 @@
-# graphviz is required
-
-- `brew install graphviz`
-
+# 3djs graphviz used
 - https://codefreezr.github.io/awesome-graphviz/#libs-for-node--js--jquery--d3
 
 # Result
