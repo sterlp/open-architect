@@ -2,6 +2,18 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .cluster,
+        .node {
+            cursor: pointer; 
+        }
+
+        .output svg {
+            height: 100%;
+            width: auto;
+        }
+    </style>
+    <title>Spring Pet Clinic</title>
 <body>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://unpkg.com/@hpcc-js/wasm@0.3.11/dist/index.min.js"></script>
@@ -11,16 +23,17 @@
 
     <nav class="navbar navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand">Spring Pet Clinic</a>
+            <a class="navbar-brand" href="https://github.com/spring-projects/spring-petclinic">Spring Pet Clinic</a>
             <div class="d-flex">
                 <button id="root" class="btn btn-outline-primary me-2">Root</button>
                 <button id="back" class="btn btn-outline-secondary">Back ></button>
             </div>
         </div>
     </nav>
-    <div style="width: 100%;">
-        <div id="graph" style="text-align: center; width: 100%;"></div>
-    </div>
+
+    <main role="main" class="container">
+        <div id="graph" class="output" style="text-align: center;"></div>
+    </main>
 <script>
 
 var data = {
