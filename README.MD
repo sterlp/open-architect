@@ -10,8 +10,8 @@
 <img src="test.project.svg">
 
 ## Package adresses
-<img src="org.sterl.testproject.addresses.svg">
+<img src="addresses.png">
 
-## Package adresses
+## Package persons
 
-<img src="org.sterl.testproject.persons.svg">
+<img src=persons.png">
